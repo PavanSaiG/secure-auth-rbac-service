@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secure-auth-rbac-service"
+version = "1.0.0"
+description = "Production-grade Secure Authentication and RBAC Service with FastAPI, Argon2id, Refresh Token Rotation, and Reuse Detection"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.8.0",
+    "pydantic-settings>=2.4.0",
+    "sqlalchemy>=2.0.32",
+    "alembic>=1.13.2",
+    "greenlet>=3.0.0",
+    "aiosqlite>=0.20.0",
+    "asyncpg>=0.29.0",
+    "argon2-cffi>=23.1.0",
+    "pyjwt>=2.9.0",
+    "cryptography>=43.0.0",
+    "mangum>=0.19.0",
+    "httpx>=0.27.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.6.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # unused arguments
+    "PTH", # use pathlib
+]
+ignore = [
+    "E501",  # line length handled by formatter
+    "B008",  # do not perform function calls in argument defaults (FastAPI Depends)
+    "ARG001", # unused function argument (fixtures, context)
+    "ARG002", # unused method argument
+    "E402",  # module level import not at top of file
+    "W293",  # blank line contains whitespace
+    "UP046", # Generic subclass used for Pydantic generic models
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]

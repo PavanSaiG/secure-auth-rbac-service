@@ -1,0 +1,6 @@
+# Sample terraform.tfvars for production
+aws_region   = "us-east-1"
+environment  = "prod"
+project_name = "auth-service"
+
+log_retention_days = 90

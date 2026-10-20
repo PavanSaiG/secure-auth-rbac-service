@@ -1,0 +1,73 @@
+### 1. Health Liveness Check
+GET http://localhost:8000/health
+Accept: application/json
+
+### 2. Health Readiness Check (Database connection)
+GET http://localhost:8000/health/ready
+Accept: application/json
+
+### 3. Register a New User
+POST http://localhost:8000/api/v1/auth/register
+Content-Type: application/json
+X-Correlation-ID: corr-reg-101
+
+{
+  "email": "user@example.com",
+  "password": "StrongPassword123!"
+}
+
+### 4. Login (Returns Access Token & Refresh Token)
+POST http://localhost:8000/api/v1/auth/login
+Content-Type: application/json
+X-Correlation-ID: corr-login-102
+
+{
+  "email": "user@example.com",
+  "password": "StrongPassword123!"
+}
+
+### 5. Rotate Refresh Token (Issues new Access & Refresh tokens)
+POST http://localhost:8000/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "PASTE_CURRENT_REFRESH_TOKEN_HERE"
+}
+
+### 6. Demonstrate Token Theft / Reuse Detection
+# Re-submitting the previous (already rotated) refresh token will trigger security alert:
+# It revokes the entire token family, invalidating all sessions for that family.
+POST http://localhost:8000/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "PASTE_OLD_ROTATED_REFRESH_TOKEN_HERE"
+}
+
+### 7. Get Current User Profile (/me)
+GET http://localhost:8000/api/v1/auth/me
+Authorization: Bearer PASTE_ACCESS_TOKEN_HERE
+Accept: application/json
+
+### 8. Admin: List All Users (Requires ADMIN or SUPPORT role)
+GET http://localhost:8000/api/v1/admin/users?limit=10&offset=0
+Authorization: Bearer PASTE_ADMIN_OR_SUPPORT_TOKEN_HERE
+Accept: application/json
+
+### 9. Admin: Assign Role (Strictly restricted to ADMIN role)
+PATCH http://localhost:8000/api/v1/admin/users/USER_UUID_HERE/role
+Authorization: Bearer PASTE_ADMIN_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "role": "SUPPORT"
+}
+
+### 10. Logout and Revoke Access Token JTI
+POST http://localhost:8000/api/v1/auth/logout?all_sessions=false
+Authorization: Bearer PASTE_ACCESS_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "refresh_token": "PASTE_REFRESH_TOKEN_HERE"
+}
